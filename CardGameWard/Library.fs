@@ -35,6 +35,19 @@ module CardWard =
 
     type Game = { player1: Player; player2: Player }
 
+    let rng = new Random()
+    let shuffle (org:_[]) = 
+        let arr = Array.copy org
+        let max = (arr.Length - 1)
+        let randomSwap (arr:_[]) i =
+            let pos = rng.Next(max)
+            let tmp = arr.[pos]
+            arr.[pos] <- arr.[i]
+            arr.[i] <- tmp
+            arr
+   
+        [|0..max|] |> Array.fold randomSwap arr
+
 
     let private cards (number: int) : Card array =
         let suits = (Enum.GetValues(typeof<Suit>) :?> (Suit[]))
@@ -47,6 +60,7 @@ module CardWard =
         }
         |> Seq.take number
         |> Seq.toArray
+        |> shuffle
 
     let private dealCards (allCards: Card array) : Card array * Card array =
         let cardsForEachPlayer = allCards.Length / 2
