@@ -1,6 +1,5 @@
 namespace CardGameWard.Tests;
 
-using Microsoft.FSharp.Linq.RuntimeHelpers;
 using static CardWard;
 
 [TestClass]
@@ -27,17 +26,36 @@ public class CardWardShould
         var allCards = game.player1.cards.Concat(game.player2.cards);
 
         var anyDuplicate = allCards.GroupBy(x => x).Any(g => g.Count() > 1);
-        
+
         Assert.IsFalse(anyDuplicate);
     }
 
-     [TestMethod]
+    [TestMethod]
     public void DealtRandomnly()
     {
         Game game1 = initGame(20);
         Game game2 = initGame(20);
 
         Assert.AreNotEqual(game1.player1.cards.First(), game2.player1.cards.First());
+    }
+
+    [TestMethod]
+    public void PlayOneTurnNoEqual()
+    {
+        var game = new Game(
+            new Player(new Card[] { new Card(CardNumber.Two, Suit.Club) }),
+            new Player(new Card[] { new Card(CardNumber.Three, Suit.Heart) })
+        );
+
+        var res = playOneTurn(game);
+
+        var expected = new Game(
+            new Player(new Card[] { }),
+            new Player(new Card[] { new Card(CardNumber.Three, Suit.Heart), new Card(CardNumber.Two, Suit.Club) })
+        );
+
+        Assert.AreEqual(expected, res);
+
     }
 
 }
