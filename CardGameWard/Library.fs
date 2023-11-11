@@ -1,7 +1,5 @@
 ﻿namespace CardGameWard
 
-
-
 type Suit =
     | Club = 1
     | Spade = 2
@@ -26,7 +24,7 @@ type CardNumber =
 type Card = { number: CardNumber; suit: Suit }
 
 type Player =
-    { cards: Card array }
+    { cards: Card list }
 
     member this.numberOfCards = this.cards.Length
 

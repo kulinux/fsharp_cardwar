@@ -5,8 +5,8 @@ module InitGame =
 
     let rng = new Random()
 
-    let private shuffle (org: _[]) =
-        let arr = Array.copy org
+    let private shuffle (org: _ list) =
+        let arr = org |> List.toArray |> Array.copy 
         let max = (arr.Length - 1)
 
         let randomSwap (arr: _[]) i =
@@ -16,25 +16,24 @@ module InitGame =
             arr.[i] <- tmp
             arr
 
-        [| 0..max |] |> Array.fold randomSwap arr
+        [| 0..max |] |> Array.fold randomSwap arr |> Array.toList
 
-    let private dealCards (allCards: Card array) : Card array * Card array =
+    let private dealCards (allCards: Card list) : Card list * Card list =
         let cardsForEachPlayer = allCards.Length / 2
-        let firstList = allCards |> Array.take cardsForEachPlayer
-        let secondList = allCards |> Array.skip cardsForEachPlayer
+        let firstList = allCards |> List.take cardsForEachPlayer
+        let secondList = allCards |> List.skip cardsForEachPlayer
         (firstList, secondList)
 
-    let private cards (number: int) : Card array =
-        let suits = (Enum.GetValues(typeof<Suit>) :?> (Suit[]))
-        let cardNumbers = (Enum.GetValues(typeof<CardNumber>) :?> (CardNumber[]))
+    let private cards (number: int) : Card list =
+        let suits = (Enum.GetValues(typeof<Suit>) :?> (Suit[])) |> Array.toList
+        let cardNumbers = (Enum.GetValues(typeof<CardNumber>) :?> (CardNumber[])) |> Array.toList
 
-        seq {
+        [
             for suit in suits do
                 for cardNumber in cardNumbers do
                     yield { number = cardNumber; suit = suit }
-        }
-        |> Seq.take number
-        |> Seq.toArray
+        ]
+        |> List.take number
         |> shuffle
 
 

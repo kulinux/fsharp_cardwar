@@ -1,10 +1,14 @@
 namespace CardGameWard.Tests;
 
 using CardGameWard;
+using Microsoft.FSharp.Collections;
+
+
 
 [TestClass]
 public class CardWardShould
 {
+
     [TestMethod]
     public void DealtEquallyInEachPlayer()
     {
@@ -43,19 +47,19 @@ public class CardWardShould
     public void PlayOneTurnNoEqual()
     {
         var game = new Game(
-            new Player(new Card[] { new Card(CardNumber.Two, Suit.Club) }),
-            new Player(new Card[] { new Card(CardNumber.Three, Suit.Heart) })
+            new Player(ListModule.OfArray(new Card[] { new Card(CardNumber.Two, Suit.Club) })),
+            new Player(ListModule.OfArray(new Card[] { new Card(CardNumber.Three, Suit.Heart) }))
         );
 
         var res = PlayGame.playOneTurn(game);
 
         var expected = new Game(
-            new Player(new Card[] { }),
-            new Player(new Card[] { new Card(CardNumber.Three, Suit.Heart), new Card(CardNumber.Two, Suit.Club) })
+            new Player(ListModule.OfArray(new Card[] { })),
+            new Player(ListModule.OfArray(new Card[] { new Card(CardNumber.Three, Suit.Heart), new Card(CardNumber.Two, Suit.Club) }))
         );
 
         Assert.AreEqual(expected, res);
-
     }
+
 
 }
