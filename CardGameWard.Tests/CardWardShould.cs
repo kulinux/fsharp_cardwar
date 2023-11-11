@@ -61,5 +61,23 @@ public class CardWardShould
         Assert.AreEqual(expected, res);
     }
 
+     [TestMethod]
+    public void AcesAreHigh()
+    {
+        var game = new Game(
+            new Player(ListModule.OfArray(new Card[] { new Card(CardNumber.King, Suit.Club) })),
+            new Player(ListModule.OfArray(new Card[] { new Card(CardNumber.Ace, Suit.Heart) }))
+        );
+
+        var res = PlayGame.playOneTurn(game);
+
+        var expected = new Game(
+            new Player(ListModule.OfArray(new Card[] { })),
+            new Player(ListModule.OfArray(new Card[] { new Card(CardNumber.Ace, Suit.Heart), new Card(CardNumber.King, Suit.Club) }))
+        );
+
+        Assert.AreEqual(expected, res);
+    }
+
 
 }
