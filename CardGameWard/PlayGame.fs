@@ -7,20 +7,26 @@ module PlayGame =
     type TurnResult =
         | Player1Win
         | Player2Win
+        | Equal
+
+    type GameResult =
         | Player1WinMatch
         | Player2WinMatch
-        | Equal
+
+    type TurnOrGameResult =
+        | TurnResult of TurnResult
+        | GameResult of GameResult
 
     let turnResultCard (card1: Card, card2: Card) : TurnResult =
         if card1.number > card2.number then Player1Win
         elif card1.number < card2.number then Player2Win
         else Equal
 
-    let turnResult (game: Game) : TurnResult =
+    let turnResult (game: Game) : TurnOrGameResult =
         match (game.player1.cards, game.player2.cards) with
-        | (player1Head :: _), (player2Head :: _) -> turnResultCard (player1Head, player2Head)
-        | [], _ -> Player2WinMatch
-        | _, [] -> Player1WinMatch
+        | (player1Head :: _), (player2Head :: _) -> TurnResult(turnResultCard (player1Head, player2Head))
+        | [], _ -> GameResult(Player2WinMatch)
+        | _, [] -> GameResult(Player1WinMatch)
 
     let war(game: Game): Game =
         let play1war = game.player1.cards |> List.head
@@ -42,15 +48,18 @@ module PlayGame =
 
 
     let playOneTurn (game: Game) : Game =
-        let (player1Head :: player1Tail) = game.player1.cards
-        let (player2Head :: player2Tail) = game.player2.cards
+        let player1Head = game.player1.cards.Head
+        let player1Tail = game.player1.cards.Tail
+
+        let player2Head = game.player2.cards.Head
+        let player2Tail = game.player2.cards.Tail
 
         match turnResult game with
-        | Player1Win ->
+        | TurnResult Player1Win ->
             { player1 = { cards = [ player1Head ] @ player1Tail @ [ player2Head ] }
               player2 = { cards = player2Tail } }
-        | Player2Win ->
+        | TurnResult Player2Win ->
             { player1 = { cards = player1Tail }
               player2 = { cards = [ player2Head ] @ player2Tail @ [ player1Head ] } }
-        | Equal -> war game
-        | Player1WinMatch | Player2WinMatch -> raise(OuterError("Player win"))
+        | TurnResult Equal -> war game
+        | GameResult _ -> raise(OuterError("Player win"))
