@@ -3,7 +3,6 @@ namespace CardGameWard
 module InitGame =
     open System
 
-
     let private shuffle (org: _ list) =
         let rng = new Random()
         let arr = org |> List.toArray
@@ -40,8 +39,5 @@ module InitGame =
         let allCards = cards totalCards
         let (firstList, secondList) = dealCards allCards
 
-        let res: Game =
-            { player1 = { cards = firstList }
-              player2 = { cards = secondList } }
-
-        res
+        { player1 = firstList
+          player2 = secondList }

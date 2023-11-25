@@ -13,21 +13,21 @@ public class CardWardShould
     public void DealtEquallyInEachPlayer()
     {
         Game game = InitGame.initGame(20);
-        Assert.AreEqual(game.player1.numberOfCards, game.player2.numberOfCards);
+        Assert.AreEqual(game.player1.Length, game.player2.Length);
     }
 
     [TestMethod]
     public void DealtEquallyInEachPlayerWithHalfOfTheCards()
     {
         Game game = InitGame.initGame(20);
-        Assert.AreEqual(game.player1.numberOfCards, 10);
+        Assert.AreEqual(game.player1.Length, 10);
     }
 
     [TestMethod]
     public void DealtWithoutRepeatingCard()
     {
         Game game = InitGame.initGame(20);
-        var allCards = game.player1.cards.Concat(game.player2.cards);
+        var allCards = game.player1.Concat(game.player2);
 
         var anyDuplicate = allCards.GroupBy(x => x).Any(g => g.Count() > 1);
 
@@ -40,22 +40,22 @@ public class CardWardShould
         Game game1 = InitGame.initGame(20);
         Game game2 = InitGame.initGame(20);
 
-        Assert.AreNotEqual(game1.player1.cards.First(), game2.player1.cards.First());
+        Assert.AreNotEqual(game1.player1.First(), game2.player1.First());
     }
 
     [TestMethod]
     public void PlayOneTurnNoEqual()
     {
         var game = new Game(
-            new Player(ListModule.OfArray(new Card[] { new Card(CardNumber.Two, Suit.Club) })),
-            new Player(ListModule.OfArray(new Card[] { new Card(CardNumber.Three, Suit.Heart) }))
+            ListModule.OfArray(new Card[] { new Card(CardNumber.Two, Suit.Club) }),
+            ListModule.OfArray(new Card[] { new Card(CardNumber.Three, Suit.Heart) })
         );
 
         var res = PlayGame.playOneTurn(game);
 
         var expected = new Game(
-            new Player(ListModule.OfArray(new Card[] { })),
-            new Player(ListModule.OfArray(new Card[] { new Card(CardNumber.Three, Suit.Heart), new Card(CardNumber.Two, Suit.Club) }))
+            ListModule.OfArray(new Card[] { }),
+            ListModule.OfArray(new Card[] { new Card(CardNumber.Three, Suit.Heart), new Card(CardNumber.Two, Suit.Club) })
         );
 
         Assert.AreEqual(expected, res);
@@ -65,15 +65,15 @@ public class CardWardShould
     public void AcesAreHigh()
     {
         var game = new Game(
-            new Player(ListModule.OfArray(new Card[] { new Card(CardNumber.King, Suit.Club) })),
-            new Player(ListModule.OfArray(new Card[] { new Card(CardNumber.Ace, Suit.Heart) }))
+            ListModule.OfArray(new Card[] { new Card(CardNumber.King, Suit.Club) }),
+            ListModule.OfArray(new Card[] { new Card(CardNumber.Ace, Suit.Heart) })
         );
 
         var res = PlayGame.playOneTurn(game);
 
         var expected = new Game(
-            new Player(ListModule.OfArray(new Card[] { })),
-            new Player(ListModule.OfArray(new Card[] { new Card(CardNumber.Ace, Suit.Heart), new Card(CardNumber.King, Suit.Club) }))
+            ListModule.OfArray(new Card[] { }),
+            ListModule.OfArray(new Card[] { new Card(CardNumber.Ace, Suit.Heart), new Card(CardNumber.King, Suit.Club) })
         );
 
         Assert.AreEqual(expected, res);
@@ -89,20 +89,18 @@ public class CardWardShould
     public void War()
     {
         var game = new Game(
-            new Player(CardOf(CardNumber.Two, CardNumber.King, CardNumber.King, CardNumber.King, CardNumber.Three)),
-            new Player(CardOf(CardNumber.Two, CardNumber.King, CardNumber.King, CardNumber.King, CardNumber.Four))
+            CardOf(CardNumber.Two, CardNumber.King, CardNumber.King, CardNumber.King, CardNumber.Three),
+            CardOf(CardNumber.Two, CardNumber.King, CardNumber.King, CardNumber.King, CardNumber.Four)
         );
 
         var res = PlayGame.playOneTurn(game);
 
         var expected = new Game(
-            new Player(CardOf()),
-            new Player(
+            CardOf(),
                 CardOf(
                     CardNumber.Two, CardNumber.King, CardNumber.King, CardNumber.King, CardNumber.Three,
                     CardNumber.Two, CardNumber.King, CardNumber.King, CardNumber.King, CardNumber.Four
                 )
-            )
         );
 
         Assert.AreEqual(expected, res);

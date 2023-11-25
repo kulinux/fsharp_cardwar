@@ -23,10 +23,7 @@ type CardNumber =
 
 type Card = { number: CardNumber; suit: Suit }
 
-type Player =
-    { cards: Card list }
-
-    member this.numberOfCards = this.cards.Length
+type Player = Card list
 
 type Game = { player1: Player; player2: Player }
 
