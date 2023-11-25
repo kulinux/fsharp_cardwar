@@ -61,7 +61,7 @@ public class CardWardShould
         Assert.AreEqual(expected, res);
     }
 
-     [TestMethod]
+    [TestMethod]
     public void AcesAreHigh()
     {
         var game = new Game(
@@ -74,6 +74,35 @@ public class CardWardShould
         var expected = new Game(
             new Player(ListModule.OfArray(new Card[] { })),
             new Player(ListModule.OfArray(new Card[] { new Card(CardNumber.Ace, Suit.Heart), new Card(CardNumber.King, Suit.Club) }))
+        );
+
+        Assert.AreEqual(expected, res);
+    }
+
+    public FSharpList<Card> CardOf(params CardNumber[] numbers)
+    {
+        var res = numbers.Select(number => new Card(number, Suit.Spade)).ToList<Card>();
+        return ListModule.OfSeq(res);
+    }
+
+    [TestMethod]
+    public void War()
+    {
+        var game = new Game(
+            new Player(CardOf(CardNumber.Two, CardNumber.King, CardNumber.King, CardNumber.King, CardNumber.Three)),
+            new Player(CardOf(CardNumber.Two, CardNumber.King, CardNumber.King, CardNumber.King, CardNumber.Four))
+        );
+
+        var res = PlayGame.playOneTurn(game);
+
+        var expected = new Game(
+            new Player(CardOf()),
+            new Player(
+                CardOf(
+                    CardNumber.Two, CardNumber.King, CardNumber.King, CardNumber.King, CardNumber.Three,
+                    CardNumber.Two, CardNumber.King, CardNumber.King, CardNumber.King, CardNumber.Four
+                )
+            )
         );
 
         Assert.AreEqual(expected, res);
